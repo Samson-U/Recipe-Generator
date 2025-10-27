@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="C:/jdbc/postgresql-42.2.29.jre7.jar"/>
+	<classpathentry kind="lib" path="C:/jdbc/jsoup-1.21.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/samso/Downloads/api-0.18.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/samso/Downloads/client-0.18.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/samso/Downloads/service-0.18.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/samso/Downloads/Assistant API Fixes 2 source code.zip"/>
+	<classpathentry kind="lib" path="C:/Users/samso/Downloads/Assistant API Fixes 2 source code"/>
+	<classpathentry kind="lib" path="C:/jdbc/json-20230227.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
