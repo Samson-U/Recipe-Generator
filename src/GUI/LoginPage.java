@@ -79,7 +79,7 @@ public class LoginPage extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        // ---------- ACTIONS ----------
+
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String email = emailField.getText().trim();
@@ -90,7 +90,7 @@ public class LoginPage extends JFrame {
                     return;
                 }
 
-                // Connect to database via UserDAO
+
                 UserDAO userDAO = new UserDAO();
                 boolean isValid = userDAO.validateUser(email, password);
 

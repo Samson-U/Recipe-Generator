@@ -1,6 +1,5 @@
 package DatabaseConnection;
 
-import Auth.PasswordUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,7 +7,7 @@ import java.sql.SQLException;
 
 public class UserDAO {
 
-    // ---------------- Register a new user ----------------
+//signup
     public boolean registerUser(String username, String email, String password) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -21,12 +20,12 @@ public class UserDAO {
             stmt = conn.prepareStatement(query);
             stmt.setString(1, username);
             stmt.setString(2, email);
-            stmt.setString(3, PasswordUtils.hashPassword(password));
+            stmt.setString(3, password);
             stmt.executeUpdate();
             return true;
 
         } catch (SQLException e) {
-            if (e.getMessage().contains("duplicate key")) {
+            if (e.getMessage().toLowerCase().contains("duplicate")) {
                 System.out.println("Email already exists!");
             } else {
                 e.printStackTrace();
@@ -42,7 +41,7 @@ public class UserDAO {
         return false;
     }
 
-    // ---------------- Validate login ----------------
+//login
     public boolean validateUser(String email, String password) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -58,8 +57,8 @@ public class UserDAO {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String storedHash = rs.getString("password");
-                return PasswordUtils.hashPassword(password).equals(storedHash);
+                String storedPassword = rs.getString("password");
+                return password.equals(storedPassword);
             }
 
         } catch (SQLException e) {

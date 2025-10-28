@@ -17,7 +17,7 @@ public class SignupPage extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
-        // Left Panel
+     
         JPanel leftPanel = new JPanel();
         leftPanel.setBounds(0, 0, 380, 450);
         leftPanel.setBackground(new Color(40, 40, 40));
@@ -37,7 +37,7 @@ public class SignupPage extends JFrame {
 
         add(leftPanel);
 
-        // Right Panel
+
         JPanel rightPanel = new JPanel();
         rightPanel.setBounds(380, 0, 420, 450);
         rightPanel.setBackground(new Color(25, 25, 25));
@@ -90,7 +90,7 @@ public class SignupPage extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        // ---------- ACTIONS ----------
+
         signupButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String name = nameField.getText().trim();
@@ -108,7 +108,7 @@ public class SignupPage extends JFrame {
                 if (success) {
                     JOptionPane.showMessageDialog(null, "Account created successfully!");
                     dispose();
-                    new LoginPage(); // go to login after signup
+                    new LoginPage();
                 } else {
                     JOptionPane.showMessageDialog(null, "Signup failed! Email might already exist or DB error.");
                 }

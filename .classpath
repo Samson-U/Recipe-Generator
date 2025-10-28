@@ -7,8 +7,6 @@
 	<classpathentry kind="lib" path="C:/Users/samso/Downloads/api-0.18.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/samso/Downloads/client-0.18.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/samso/Downloads/service-0.18.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/samso/Downloads/Assistant API Fixes 2 source code.zip"/>
-	<classpathentry kind="lib" path="C:/Users/samso/Downloads/Assistant API Fixes 2 source code"/>
 	<classpathentry kind="lib" path="C:/jdbc/json-20230227.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,35 +1,38 @@
 package GUI;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
 import AICodes.AIRefiner;
 import AICodes.GetRecipe;
-import AICodes.RecipeFetcher;
+import DatabaseConnection.DatabaseManager;
 
 public class DashboardPage extends JFrame {
 
     private JTextArea ingField;
+    private JButton generateBtn;
+    private JLabel statusLabel;
 
     public DashboardPage() {
 
-        setTitle("Recipe Generator Dashboard");
+        setTitle("AI Recipe Generator");
         setSize(900, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
         setLocationRelativeTo(null);
 
-        // ---------------- Header ----------------
+
         JPanel header = new JPanel();
         header.setBounds(0, 0, 900, 60);
         header.setBackground(new Color(40, 40, 40));
         header.setLayout(null);
 
-        JLabel title = new JLabel(" Recipe Generator");
+        JLabel title = new JLabel(" AI Recipe Generator");
         title.setForeground(Color.WHITE);
         title.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        title.setBounds(20, 15, 300, 30);
+        title.setBounds(20, 15, 400, 30);
         header.add(title);
 
         JButton logoutBtn = new JButton("Logout");
@@ -51,7 +54,8 @@ public class DashboardPage extends JFrame {
         header.add(logoutBtn);
         add(header);
 
-        // ---------------- Main Panel ----------------
+
+        
         JPanel mainPanel = new JPanel();
         mainPanel.setBounds(0, 60, 900, 440);
         mainPanel.setBackground(new Color(25, 25, 25));
@@ -71,7 +75,7 @@ public class DashboardPage extends JFrame {
         ingField.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80)));
         mainPanel.add(ingField);
 
-        JButton generateBtn = new JButton("Generate Recipe");
+        generateBtn = new JButton("Generate Recipe");
         generateBtn.setBounds(100, 210, 200, 35);
         generateBtn.setBackground(new Color(120, 80, 200));
         generateBtn.setForeground(Color.WHITE);
@@ -80,14 +84,19 @@ public class DashboardPage extends JFrame {
         generateBtn.setBorderPainted(false);
         mainPanel.add(generateBtn);
 
+        statusLabel = new JLabel("");
+        statusLabel.setBounds(100, 260, 600, 25);
+        statusLabel.setForeground(Color.LIGHT_GRAY);
+        mainPanel.add(statusLabel);
+
         add(mainPanel);
         setVisible(true);
 
-        // ---------------- Generate Recipe Action ----------------
+        
+        
         generateBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String ingredients = ingField.getText().trim();
-
                 if (ingredients.equals("")) {
                     JOptionPane.showMessageDialog(null, "Please enter some ingredients first!");
                 } else {
@@ -97,32 +106,37 @@ public class DashboardPage extends JFrame {
         });
     }
 
-    // --------- Recipe Generation Logic ------------
     private void generateRecipe(final String ingredients) {
-        System.out.println("[DEBUG] Starting recipe generation for: " + ingredients);
-
+       
         Thread worker = new Thread(new Runnable() {
             public void run() {
                 try {
-                    System.out.println("[DEBUG] Fetching suggestion...");
+
                     final String mealName = GetRecipe.fetchSuggestion(ingredients);
-                    System.out.println("[DEBUG] Suggested Meal Name: " + mealName);
 
-                    System.out.println("[DEBUG] Fetching raw recipe...");
-                    String rawRecipe = RecipeFetcher.getRecipe(mealName);
+                    boolean exists = DatabaseManager.existsInDatabase(mealName);
+                    if (exists) {
+                        System.out.println("[DEBUG] Meal exists in DB, fetching saved recipe.");
+                        final String saved = DatabaseManager.getRecipeByName(mealName);
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                new popup(DashboardPage.this, mealName,
+                                    saved == null ? "No recipe saved." : saved);
+                            }
+                        });
+                    } else {
 
-                    System.out.println("[DEBUG] Refining recipe...");
-                    final String refinedRecipe = AIRefiner.refineRecipe(rawRecipe);
+                        System.out.println("[DEBUG] Meal not in DB, generating recipe from AI...");
+                        final String fullRecipe = GetRecipe.fetchFullRecipe(ingredients);
+                        final String refined = AIRefiner.refineRecipe(fullRecipe);
 
-                    System.out.println("[DEBUG] Recipe generation complete!");
-
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            new popup(DashboardPage.this, mealName, refinedRecipe);
-                        }
-                    });
-
-                } catch (Exception ex) {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                new popup(DashboardPage.this, mealName, refined, ingredients);
+                            }
+                        });
+                    }
+                } catch (final Exception ex) {
                     ex.printStackTrace();
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
@@ -135,6 +149,7 @@ public class DashboardPage extends JFrame {
 
         worker.start();
     }
+    
 
     public static void main(String[] args) {
         new DashboardPage();

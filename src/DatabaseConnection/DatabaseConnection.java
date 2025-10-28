@@ -10,10 +10,9 @@ public class DatabaseConnection {
     private static final String USER = "postgres";
     private static final String PASSWORD = "samson";
 
-    // Compatible with older Java: handle exceptions inside
     public static Connection getConnection() {
         try {
-            Class.forName("org.postgresql.Driver"); // Load driver
+            Class.forName("org.postgresql.Driver");
             return DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (ClassNotFoundException e) {
             System.out.println("PostgreSQL Driver not found!");
@@ -22,14 +21,7 @@ public class DatabaseConnection {
             System.out.println("Connection failed: " + e.getMessage());
             e.printStackTrace();
         }
-        return null; // Return null if connection fails
+        return null;
     }
 
-    public static void main(String[] args) {
-        Connection conn = getConnection();
-        if (conn != null) {
-            System.out.println("Connected to PostgreSQL successfully!");
-            try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
-        }
-    }
 }

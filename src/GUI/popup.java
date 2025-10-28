@@ -1,19 +1,22 @@
 package GUI;
 
+import DatabaseConnection.DatabaseManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class popup {
 
-    public popup(JFrame parentFrame, String mealName, String recipeTextContent) {
+    public popup(final JFrame parentFrame, final String mealName,
+                 final String recipeTextContent, final String sourceIngredients) {
+
         final JDialog dialog = new JDialog(parentFrame, "Recipe Details", true);
         dialog.setSize(650, 500);
         dialog.setLayout(null);
         dialog.getContentPane().setBackground(new Color(25, 25, 25));
         dialog.setLocationRelativeTo(parentFrame);
 
-        // --- Header ---
+
         JLabel title = new JLabel(mealName);
         title.setForeground(Color.WHITE);
         title.setFont(new Font("Segoe UI", Font.BOLD, 18));
@@ -29,7 +32,7 @@ public class popup {
         backBtn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         dialog.add(backBtn);
 
-        // --- Recipe Text Area ---
+        
         JTextArea recipeText = new JTextArea();
         recipeText.setEditable(false);
         recipeText.setBackground(new Color(35, 35, 35));
@@ -49,8 +52,8 @@ public class popup {
         scroll.setBorder(BorderFactory.createLineBorder(new Color(60, 60, 60)));
         dialog.add(scroll);
 
-        // --- Save Button ---
-        JButton saveBtn = new JButton(" Save Recipe");
+
+        final JButton saveBtn = new JButton(" Save Recipe");
         saveBtn.setBounds(250, 420, 150, 35);
         saveBtn.setBackground(new Color(120, 80, 200));
         saveBtn.setForeground(Color.WHITE);
@@ -59,20 +62,33 @@ public class popup {
         saveBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         dialog.add(saveBtn);
 
-        // --- Button Actions ---
+        if (sourceIngredients == null || sourceIngredients.trim().isEmpty()) {
+            saveBtn.setEnabled(false);
+        }
+
         backBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                dialog.dispose(); // Close popup and go back
+                dialog.dispose();
             }
         });
 
         saveBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                DatabaseManager.insertRecipe(
+                        mealName,
+                        (sourceIngredients == null ? "" : sourceIngredients),
+                        (recipeTextContent == null ? "" : recipeTextContent)
+                );
                 JOptionPane.showMessageDialog(dialog, "Recipe saved successfully!");
-                // Later: Hook this into your DB save logic (RecipeFetcher / DatabaseManager)
+                saveBtn.setEnabled(false);
             }
         });
 
         dialog.setVisible(true);
+    }
+
+    
+    public popup(final JFrame parentFrame, final String mealName, final String recipeTextContent) {
+        this(parentFrame, mealName, recipeTextContent, null);
     }
 }
